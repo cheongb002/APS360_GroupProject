@@ -1,5 +1,6 @@
 #I stored some parameters that get commonly passed to functions here, so you can simply pass the settings to functions
 #You can change the defaults of the parameters, especially the path ones
+import os
 
 class settings():
     def __init__(self,
@@ -7,20 +8,50 @@ class settings():
                 dataset_path = '/home/brian/Data/APS360/APS Project/PlantVillage',
                 features_path = '/home/brian/Data/APS360/APS Project/PlantVillage_Features',
                 tensorboard_logdir = "/home/brian/Data/APS360/APS Project/logs",
+                weight_checkpoints = "/home/brian/Data/APS360/APS Project/checkpoints",
                 use_cuda=False,
                 learning_rate = 1e-3,
                 num_epochs = 30,
-                save_weights = False):
+                batch_size = 16,
+                save_weights = False,
+                image_size = [224,224],
+                save_freq = 1):
+        """Aggregated settings class for various scripts
+        Args:
+            classes (list): list of classes, can be obtained from dataset.classes
+            dataset_path (string): Location of PlantVillage dataset
+            features_path (string): Location of featuers generated from PV dataset
+            tensorboard_logdir (string): location of where all the tensorboard files will be saved to during training
+            weight_checkpoints (string): Where to save the weights if save_weights is True
+            use_cuda (bool): Whether you want to use CUDA
+            learning_rate (float): Learning rate for trainer
+            num_epochs (int): Number of epochs to train for
+            batch_size (int): Batch size for DataLoaders
+            save_weights (bool): whether to save weights during training
+            image_size (list of ints or int): Dimension(s) to resize images to. Must be specific to the desired model to train on
+            save_freq (int): how often do you want to save the weights
+        """
         self.classes = classes
-        self.dataset_path = dataset_path
+        self.dataset_path = dataset_path #where the datset is stored
         self.features_path = features_path #this one is optional if not doing feature extraction
+        if not os.path.isdir(self.features_path):
+            os.mkdir(self.features_path)
         self.tensorboard_logdir = tensorboard_logdir
+        if not os.path.isdir(self.tensorboard_logdir):
+            os.mkdir(self.tensorboard_logdir)
+        self.weight_checkpoints = weight_checkpoints
+        if not os.path.isdir(self.weight_checkpoints):
+            os.mkdir(self.weight_checkpoints)
         self.use_cuda = use_cuda
         self.learning_rate = learning_rate
         self.num_epochs = num_epochs
         self.save_weights = save_weights
+        self.image_size = image_size
+        self.batch_size = batch_size
+        self.save_freq = save_freq
     def num_classes(self): #get number of classes, used in some functions
-        return len(classes)
+        #this is a function instead of a variable just in case you change classes
+        return len(self.classes)
     def show_settings(self): #print out current settings
         temp = vars(self)
         for item in temp:

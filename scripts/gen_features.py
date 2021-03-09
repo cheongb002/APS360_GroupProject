@@ -1,3 +1,7 @@
+'''
+Generates a set of features using a model as a feature extractor
+'''
+
 import sys
 import numpy as np
 import time
@@ -18,33 +22,38 @@ from utils.common import *
 from utils import settings
 
 use_cuda = True
+
+# Where the plant village dataset is
 dataset_path = "/home/brian/Data/APS360/APS Project/PlantVillage"
 
+#Where you want the features to be saved
+save_path = "/home/brian/Data/APS360/APS Project/PlantVillage_Features"
+
+#note the other parameter settings are not needed in this case
+# the default classes are sufficient
+settings = settings(dataset_path = dataset_path,
+                    features_path = save_path,
+                    use_cuda=use_cuda)
+
+'''change your settings up here'''
+
 transformations = torchvision.transforms.Compose([
-    torchvision.transforms.Resize(224),
+    torchvision.transforms.Resize(settings.image_size),
     torchvision.transforms.ToTensor(),
     torchvision.transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 ])
 full_dataset = torchvision.datasets.ImageFolder(dataset_path,transform=transformations)
 
-classes = full_dataset.classes
 print("The following classes were found: {}".format(classes))
+settings.classes = classes #just in case they're different
 
 data_loader = torch.utils.data.DataLoader(full_dataset)
 
-model = create_model("efficientnet",classes,size=0)
+model = create_model("efficientnet",settings,size=0)
 
 if use_cuda and torch.cuda.is_available():
     model.cuda()
     print("CUDA is available")
-
-save_path = "/home/brian/Data/APS360/APS Project/PlantVillage_Features"
-
-#note the other parameter settings are not neededs in this case
-settings = settings(classes=classes,
-                    features_path = save_path,
-                    use_cuda=use_cuda)
-
 
 gen_features(data_loader,model,settings)
 

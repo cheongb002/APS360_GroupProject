@@ -12,30 +12,42 @@ from torch.utils.tensorboard import SummaryWriter
 import torchvision.transforms as transforms
 import matplotlib.pyplot as plt
 torch.manual_seed(1000)
+from datetime import date
 
-def create_model(architecture, classes, size=0):
+from utils.models import *
+
+def create_model(architecture, settings, size=0):
     if architecture == "efficientnet":
         from efficientnet_pytorch import EfficientNet
-        model = EfficientNet.from_pretrained("efficientnet-b{}".format(size), num_classes=len(classes))
+        model = EfficientNet.from_pretrained("efficientnet-b{}".format(size), num_classes=settings.num_classes())
         print("EfficientNet-b{} Model created".format(size))
         return model
+    
+    elif architecture == "efficientnet_fc":
+        model = EfficientNet_Classifier(settings)
+        print("EfficientNet Classifier created")
+        return model
+    
     else:
         print("No valid architecture was given")
         return False
 
-def get_model_name(name, batch_size, learning_rate, epoch):
+def get_model_name(model_name,epoch, settings, identifier = date.today().strftime("%b_%d_%Y")):
     """ Generate a name for the model consisting of all the hyperparameter values
 
     Args:
-        config: Configuration object containing the hyperparameters
+        model: model being trained on
+        settings (settings object): settings of the run
+        identifier (str): Optional unique identifier. Default set as the date
     Returns:
-        path: A string with the hyperparameter name and value concatenated
+        name: A string with the hyperparameter information
     """
-    path = "model_{0}_bs{1}_lr{2}_epoch{3}".format(name,
-                                                   batch_size,
-                                                   learning_rate,
+    name = "{0}_model_{1}_bs{2}_lr{3}_epoch{4}".format(identifier,
+                                                    model_name,
+                                                   settings.batch_size,
+                                                   settings.learning_rate,
                                                    epoch)
-    return path
+    return name
 
 def get_accuracy(model, data_loader):
 
@@ -73,7 +85,7 @@ def gen_features(data_loader,model,settings): #note batch size should be 1 here
         if use_cuda and torch.cuda.is_available():
             imgs = imgs.cuda()
             labels = labels.cuda()
-        feature = model.extract_features(imgs)
+        feature = model.extract_features(imgs) #currently only configured for the EfficientNet model. Exact function may vary.
         #feature = torch.from_numpy(feature.detach().numpy())
         folder_name = os.path.join(save_folder, model.name, classes[labels])
         if not os.path.isdir(folder_name):
