@@ -1,5 +1,6 @@
 '''
 Generates a set of features using a model as a feature extractor
+Saves the features so we don't have to regenerate them every single run
 '''
 
 import sys

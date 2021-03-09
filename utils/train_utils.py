@@ -11,9 +11,11 @@ import torchvision
 from torch.utils.data.sampler import SubsetRandomSampler
 from torch.utils.tensorboard import SummaryWriter
 import torchvision.transforms as transforms
-import matplotlib.pyplot as plt
 
 from utils.common import *
+
+import progressbar
+
 
 def train_net(model, train_loader, val_loader, settings):
     ########################################################################
@@ -31,10 +33,6 @@ def train_net(model, train_loader, val_loader, settings):
     current_loader = train_loader
     eval_loader = val_loader
     
-    #current_loader = torch.utils.data.DataLoader(train_data, batch_size=batch_size)
-    #eval_loader = torch.utils.data.DataLoader(val_data,batch_size=1024)
-    #classes = ['A','B','C','D','E','F','G','H','I']
-    
     ########################################################################
     # Define the Loss function and optimizer
     # The loss function will be Binary Cross Entropy (BCE). In this case we
@@ -45,53 +43,77 @@ def train_net(model, train_loader, val_loader, settings):
     optimizer = optim.Adam(model.parameters(), lr=settings.learning_rate)
 
     ########################################################################
-    # Set up some numpy arrays to store the accuracies
+    # Set up tensorboard writer to store the accuracies and losses
     
     if not os.path.isdir(logdir):
-        os.path.mkdir(logdir)
-    run_name = 
-    logdir = os.path.join(logdir, get_model_name(model.name,settings))
-    if not os.path(logdir):
-        os.path.mkdir(logdir)
+        os.mkdir(logdir)
+    run_name = get_model_name(model.name,settings, settings.num_epochs)
+    logdir = os.path.join(logdir, run_name)
+    os.mkdir(logdir) #Will give error if directory already exists. Try giving a new unique identifier, or deleting the old run logs
 
     writer = SummaryWriter(log_dir=logdir)
+
     #iters, losses, train_acc, val_acc = [], [], [], []
     n=0
+    ########################################################################
+    #set up the progress bar
+    widgets = [
+        progressbar.Percentage(),
+        progressbar.Bar(),
+        ' Adaptive ETA: ', progressbar.AdaptiveETA(),
+        ', ',
+        progressbar.Variable('epoch'),
+        ', ',
+        progressbar.Variable('train_loss'),
+        ', ',
+        progressbar.Variable('val_accuracy', width=12, precision=12),
+    ]
+    
+
     ########################################################################
     # Train the network
     # Loop over the data iterator and sample a new batch of training data
     # Get the output from the network, and optimize our loss function.
     start_time = time.time()
-    for epoch in range(num_epochs):  # loop over the dataset multiple times
-        epoch_start = time.time()
-        for imgs, labels in iter(current_loader):
-            #To Enable GPU Usage
-            if use_cuda and torch.cuda.is_available():
-              
-              imgs = imgs.cuda()
-              labels = labels.cuda()
-              if epoch==1:
-                print("successfully used CUDA on imgs")
-            ######################
+    #print('Set up done')
+    with progressbar.ProgressBar(max_value = num_epochs,widgets = widgets) as bar:
+        for epoch in range(num_epochs):  # loop over the dataset multiple times
+            #print("Epoch", epoch)
+            epoch_start = time.time()
+            for imgs, labels in iter(current_loader):
+                #To Enable GPU Usage
+                if settings.use_cuda and torch.cuda.is_available():
+                
+                    imgs = imgs.cuda()
+                    labels = labels.cuda()
+                    ######################
 
-            out = model(imgs)             # forward pass
+                out = model(imgs)             # forward pass
 
-            loss = criterion(out, labels) # compute the total loss
-            loss.backward()               # backward pass (compute parameter updates)
-            optimizer.step()              # make the updates for each parameter
-            optimizer.zero_grad()         # a clean up step for PyTorch
+                loss = criterion(out, labels) # compute the total loss
+                loss.backward()               # backward pass (compute parameter updates)
+                optimizer.step()              # make the updates for each parameter
+                optimizer.zero_grad()         # a clean up step for PyTorch
 
-            # save the current training information
-            writer.add_scalar("Loss/train", loss,n)
-            writer.add_scalar("Accuracy/train",get_accuracy(model,data_loader=current_loader),n)
+                # save the current training information
+                writer.add_scalar("loss/train", loss,n)
+                
 
-            del imgs
-            del labels  # compute validation accuracy
-            n+=1
-        writer.add_scalar("Accuracy/validation", get_accuracy(model,data_loader=eval_loader),epoch)
-        if settings.save_weights and epoch%settings.save_freq==0:
-            model_path = os.join(settings.weight_checkpoints,get_model_name(model.name,settings,epoch))
-            torch.save(model.state_dict(), model_path)
+                del imgs
+                del labels  # compute validation accuracy
+                n+=1
+            train_accuracy = get_accuracy(model,data_loader=current_loader)
+            writer.add_scalar("accuracy/train",train_accuracy,epoch)
+
+            val_accuracy = get_accuracy(model,data_loader=eval_loader)
+            writer.add_scalar("accuracy/validation", val_accuracy,epoch)
+
+            if settings.save_weights and epoch%settings.save_freq==0:
+                model_path = os.join(settings.weight_checkpoints,get_model_name(model.name,settings,epoch))
+                torch.save(model.state_dict(), model_path)
+            
+            bar.update(epoch,epoch=epoch,train_loss=loss,val_accuracy=val_accuracy)
+
     print('Finished Training')
     end_time = time.time()
     elapsed_time = end_time - start_time

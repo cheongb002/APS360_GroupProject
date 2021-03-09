@@ -12,7 +12,6 @@ from torch.utils.tensorboard import SummaryWriter
 import torchvision.transforms as transforms
 import matplotlib.pyplot as plt
 torch.manual_seed(1000)
-from datetime import date
 
 from utils.models import *
 
@@ -32,9 +31,9 @@ def create_model(architecture, settings, size=0):
         print("No valid architecture was given")
         return False
 
-def get_model_name(model_name,epoch, settings, identifier = date.today().strftime("%b_%d_%Y")):
+def get_model_name(model_name,settings,epoch):
     """ Generate a name for the model consisting of all the hyperparameter values
-
+    If settings.identifier==None, then generate a name with the date, model, bs, and learning rate
     Args:
         model: model being trained on
         settings (settings object): settings of the run
@@ -42,11 +41,14 @@ def get_model_name(model_name,epoch, settings, identifier = date.today().strftim
     Returns:
         name: A string with the hyperparameter information
     """
-    name = "{0}_model_{1}_bs{2}_lr{3}_epoch{4}".format(identifier,
+    if not settings.identifier:
+        name = "{0}_model_{1}_bs{2}_lr{3}_epoch{4}".format(date.today().strftime("%b_%d_%Y"),
                                                     model_name,
                                                    settings.batch_size,
                                                    settings.learning_rate,
                                                    epoch)
+    else:
+        name = "{}_epoch{}".format(settings.identifier,epoch)
     return name
 
 def get_accuracy(model, data_loader):
