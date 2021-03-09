@@ -16,6 +16,8 @@ import matplotlib.pyplot as plt
 
 from efficientnet_pytorch import EfficientNet
 
+classes = [""]
+
 get_features = True #do we want to regenerate the features
 
 use_cuda=True

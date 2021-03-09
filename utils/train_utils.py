@@ -1,4 +1,5 @@
 """ copied over from Brian's Lab 3b"""
+#Functions specific to training
 
 import numpy as np
 import time
@@ -12,21 +13,8 @@ from torch.utils.tensorboard import SummaryWriter
 import torchvision.transforms as transforms
 import matplotlib.pyplot as plt
 
-def gen_features(data,save_folder):
-    loader = torch.utils.data.DataLoader(data)
-    features = []
-    num = 0
-    for imgs,labels in iter(loader):
-        feature = ALNC(imgs)
-        feature = torch.from_numpy(feature.detach().numpy())
-        folder_name = save_folder + '/' + str(classes[labels])
-        if not os.path.isdir(folder_name):
-            os.mkdir(folder_name)
-        torch.save(feature.squeeze(0), folder_name+'/'+str(num)+'.tensor')
-        num += 1
-    return True
 
-def train_net(net, train_data, val_data, batch_size=64, learning_rate=0.01, num_epochs=30):
+def train_net(net, train_loader, val_loader, classes, batch_size=64, learning_rate=0.01, num_epochs=30, save = False, logdir = "./logs"):
     ########################################################################
     # Train a classifier on cats vs dogs
     #target_classes = ['A','B','C','D','E','F','G','H','I']
@@ -35,9 +23,13 @@ def train_net(net, train_data, val_data, batch_size=64, learning_rate=0.01, num_
     torch.manual_seed(1000)
     ########################################################################
     # Obtain the PyTorch data loader objects to load batches of the datasets
-    current_loader = torch.utils.data.DataLoader(train_data, batch_size=batch_size)
-    eval_loader = torch.utils.data.DataLoader(val_data,batch_size=1024)
-    classes = ['A','B','C','D','E','F','G','H','I']
+    current_loader = train_loader
+    eval_loader = val_loader
+    
+    #current_loader = torch.utils.data.DataLoader(train_data, batch_size=batch_size)
+    #eval_loader = torch.utils.data.DataLoader(val_data,batch_size=1024)
+    #classes = ['A','B','C','D','E','F','G','H','I']
+    
     ########################################################################
     # Define the Loss function and optimizer
     # The loss function will be Binary Cross Entropy (BCE). In this case we
@@ -49,6 +41,8 @@ def train_net(net, train_data, val_data, batch_size=64, learning_rate=0.01, num_
 
     ########################################################################
     # Set up some numpy arrays to store the accuracies
+    if not os.path.isdir(logdir):
+        
     iters, losses, train_acc, val_acc = [], [], [], []
     n=0
     ########################################################################

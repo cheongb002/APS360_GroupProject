@@ -168,7 +168,7 @@ class EfficientNet(nn.Module):
         assert len(blocks_args) > 0, 'block args must be greater than 0'
         self._global_params = global_params
         self._blocks_args = blocks_args
-
+        self.name = 'EfficientNet'
         # Batch norm parameters
         bn_mom = 1 - self._global_params.batch_norm_momentum
         bn_eps = self._global_params.batch_norm_epsilon
@@ -340,6 +340,7 @@ class EfficientNet(nn.Module):
         blocks_args, global_params = get_model_params(model_name, override_params)
         model = cls(blocks_args, global_params)
         model._change_in_channels(in_channels)
+        model.name = model_name
         return model
 
     @classmethod
@@ -374,6 +375,8 @@ class EfficientNet(nn.Module):
         model = cls.from_name(model_name, num_classes=num_classes, **override_params)
         load_pretrained_weights(model, model_name, weights_path=weights_path, load_fc=(num_classes == 1000), advprop=advprop)
         model._change_in_channels(in_channels)
+        model.name = model_name
+
         return model
 
     @classmethod
