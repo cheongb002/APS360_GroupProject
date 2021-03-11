@@ -58,7 +58,7 @@ def gen_features():
         model.cuda()
         print("CUDA is available")
 
-    gen_features(data_loader,model,run_settings)
+    generate_features(data_loader,model,run_settings)
 
     print("Successfully generated features in",save_path)
 

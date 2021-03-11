@@ -72,7 +72,7 @@ def get_accuracy(model, data_loader):
         total += imgs.shape[0]
     return correct / total
 
-def gen_features(data_loader,model,settings): #note batch size should be 1 here
+def generate_features(data_loader,model,settings): #note batch size should be 1 here
     #loader = torch.utils.data.DataLoader(data)
     save_folder = settings.features_path
     classes = settings.classes
