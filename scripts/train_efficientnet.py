@@ -15,12 +15,12 @@ from torch.utils.tensorboard import SummaryWriter
 import torchvision.transforms as transforms
 import matplotlib.pyplot as plt
 
-import efficientnet_pytorch
-from efficientnet_pytorch.model import EfficientNet
-
 from utils.common import *
 from utils.train_utils import *
 from utils.settings import settings
+
+#import efficientnet_pytorch
+from efficientnet_pytorch.model import EfficientNet
 
 
 efficientnet_architecture = "efficientnet_fc"
@@ -60,11 +60,10 @@ else:
     print("CUDA not being used")
 
 #begin training
-settings.identifier = "testing_tensorboard_0" #try to change this with each run
+settings.identifier = "EfficientNet_Trial1" #try to change this with each run
 
 print("Beginning Training")
-#train_net(model,train_loader,val_loader,settings)
-train_net(model,val_loader,test_loader,settings)
+train_net(model,train_loader,val_loader,settings)
 
 test_acc = get_accuracy(model,test_loader)
 print("Final Test accuracy: {}".format(test_acc))

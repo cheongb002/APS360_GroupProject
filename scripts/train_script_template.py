@@ -14,6 +14,9 @@ settings.identifier = "training_template"
 # @Michael pls wrap these steps all the way down to the dataloader such that things like transforms 
 # and training set size can simply be passed as parameters. We want to be able to call 1 function with parameters
 # and get back the data_loader objects
+
+# train_laoder, val_l, test_l = generate_loaders(settings)
+
 transformations = torchvision.transforms.Compose([
     torchvision.transforms.Resize(settings.image_size),
     torchvision.transforms.ToTensor(),

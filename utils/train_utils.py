@@ -60,7 +60,7 @@ def train_net(model, train_loader, val_loader, settings):
     widgets = [
         progressbar.Percentage(),
         progressbar.Bar(),
-        ' Adaptive ETA: ', progressbar.AdaptiveETA(),
+        ' Adaptive ', progressbar.AdaptiveETA(),
         ', ',
         progressbar.Variable('epoch'),
         ', ',
