@@ -18,7 +18,9 @@ class settings():
                 image_size = [224,224],
                 save_freq = 1,
                 identifier = None,
-                train_val_test_split = [0.8,0.15,0.5]):
+                train_val_test_split = [0.8,0.15,0.5]
+                #add some boolean parameters for any transformations we want
+                ):
         """Aggregated settings class for various scripts
         Args:
             classes (list): list of classes, can be obtained from dataset.classes
