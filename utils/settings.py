@@ -1,7 +1,7 @@
 #I stored some parameters that get commonly passed to functions here, so you can simply pass the settings to functions
 #You can change the defaults of the parameters, especially the path ones
 import os
-from datetime import date
+from datetime import datetime
 
 class settings():
     def __init__(self,
@@ -18,7 +18,8 @@ class settings():
                 image_size = [224,224],
                 save_freq = 1,
                 identifier = None,
-                train_val_test_split = [0.8,0.15,0.5]
+                train_val_test_split = [0.8,0.15,0.5],
+                settings_path = "/home/brian/Data/APS360/APS_Project/trial_settings"
                 #add some boolean parameters for any transformations we want
                 ):
         """Aggregated settings class for various scripts
@@ -59,9 +60,14 @@ class settings():
         self.identifier = identifier
         self.train_val_test_split = train_val_test_split
 
+        self.settings_path = settings_path
+        if not os.path.isdir(self.settings_path):
+            os.mkdir(self.settings_path)
+
     def num_classes(self): #get number of classes, used in some functions
         #this is a function instead of a variable just in case you change classes
         return len(self.classes)
+    
     def show_settings(self): #print out current settings
         temp = vars(self)
         for item in temp:
@@ -69,4 +75,9 @@ class settings():
         return True
 
     def save_settings(self): #save current settings to a txt file
-        
+        with open(os.path.join(self.settings_path, self.identifier+".txt"), "a") as text_file:
+            print("\n Trial run at {}\n".format(datetime.now().strftime("%d/%m/%Y %H:%M:%S")), file=text_file)
+            temp = vars(self)
+            for item in temp:
+                print(item, ":", temp[item], file=text_file)
+            

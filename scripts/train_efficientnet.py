@@ -27,19 +27,20 @@ def train_efficientnet():
 
     efficientnet_architecture = "efficientnet_fc"
 
-    settings = settings(use_cuda=True)
-    settings.features_path = "/home/brian/Data/APS360/APS_Project/PlantVillage_Features/efficientnet-b0"
-    settings.num_epochs = 20
-    settings.batch_size = 256
-
-    full_dataset = torchvision.datasets.DatasetFolder(settings.features_path,loader=torch.load,extensions=(".tensor"))
-    settings.classes = full_dataset.classes
-    print("Classes found: {}".format(settings.classes))
+    trial_settings = settings(use_cuda=True)
+    trial_settings.features_path = "/home/brian/Data/APS360/APS_Project/PlantVillage_Features/efficientnet-b0"
+    trial_settings.num_epochs = 20
+    trial_settings.batch_size = 512
+    trial_settings.identifier = "EfficientNet_Trial2" #try to change this with each run
+    
+    full_dataset = torchvision.datasets.DatasetFolder(trial_settings.features_path,loader=torch.load,extensions=(".tensor"))
+    trial_settings.classes = full_dataset.classes
+    print("Classes found: {}".format(trial_settings.classes))
 
     #split full dataset
     full_size = len(full_dataset)
-    train_size = int(settings.train_val_test_split[0]*full_size)
-    val_size = int(settings.train_val_test_split[1]*full_size)
+    train_size = int(trial_settings.train_val_test_split[0]*full_size)
+    val_size = int(trial_settings.train_val_test_split[1]*full_size)
     test_size = full_size - train_size - val_size
     split_sizes = [train_size,val_size,test_size]
 
@@ -50,19 +51,19 @@ def train_efficientnet():
     print("Number of test examples: {}".format(len(test_features)))
 
     #Create DataLoaders
-    train_loader = torch.utils.data.DataLoader(train_features, batch_size=settings.batch_size,shuffle=True)
+    train_loader = torch.utils.data.DataLoader(train_features, batch_size=trial_settings.batch_size,shuffle=True)
     val_loader = torch.utils.data.DataLoader(val_features,batch_size = 512, shuffle=True)
     test_loader = torch.utils.data.DataLoader(test_features,shuffle=True)
 
-    model = create_model(efficientnet_architecture,settings,size=0)
-    if settings.use_cuda and torch.cuda.is_available():
+    model = create_model(efficientnet_architecture,trial_settings,size=0)
+    if trial_settings.use_cuda and torch.cuda.is_available():
         model.cuda()
         print("CUDA available")
     else:
         print("CUDA not being used")
 
     #begin training
-    settings.identifier = "EfficientNet_Trial1" #try to change this with each run
+
 
     print("Beginning Training")
     train_net(model,train_loader,val_loader,settings)

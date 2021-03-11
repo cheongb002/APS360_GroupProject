@@ -18,6 +18,8 @@ import progressbar
 
 
 def train_net(model, train_loader, val_loader, settings):
+    print(settings.num_classes())
+    settings.save_settings()
     ########################################################################
     classes = settings.classes
     batch_size = settings.batch_size
