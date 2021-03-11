@@ -32,11 +32,11 @@ def train_efficientnet():
     trial_settings.num_epochs = 20
     trial_settings.batch_size = 512
     trial_settings.identifier = "EfficientNet_Trial2" #try to change this with each run
-    
+
     full_dataset = torchvision.datasets.DatasetFolder(trial_settings.features_path,loader=torch.load,extensions=(".tensor"))
     trial_settings.classes = full_dataset.classes
     print("Classes found: {}".format(trial_settings.classes))
-
+    
     #split full dataset
     full_size = len(full_dataset)
     train_size = int(trial_settings.train_val_test_split[0]*full_size)
@@ -66,7 +66,7 @@ def train_efficientnet():
 
 
     print("Beginning Training")
-    train_net(model,train_loader,val_loader,settings)
+    train_net(model,train_loader,val_loader,trial_settings)
 
     test_acc = get_accuracy(model,test_loader)
     print("Final Test accuracy: {}".format(test_acc))

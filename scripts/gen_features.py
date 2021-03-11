@@ -34,31 +34,31 @@ def gen_features():
 
     #note the other parameter settings are not needed in this case
     # the default classes are sufficient
-    settings = settings(dataset_path = dataset_path,
+    run_settings = settings(dataset_path = dataset_path,
                         features_path = save_path,
                         use_cuda=use_cuda)
 
     '''change your settings up here'''
 
     transformations = torchvision.transforms.Compose([
-        torchvision.transforms.Resize(settings.image_size),
+        torchvision.transforms.Resize(run_settings.image_size),
         torchvision.transforms.ToTensor(),
         torchvision.transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
     ])
     full_dataset = torchvision.datasets.ImageFolder(dataset_path,transform=transformations)
 
     print("The following classes were found: {}".format(classes))
-    settings.classes = classes #just in case they're different
+    run_settings.classes = classes #just in case they're different
 
     data_loader = torch.utils.data.DataLoader(full_dataset)
 
-    model = create_model("efficientnet",settings,size=0)
+    model = create_model("efficientnet",run_settings,size=0)
 
     if use_cuda and torch.cuda.is_available():
         model.cuda()
         print("CUDA is available")
 
-    gen_features(data_loader,model,settings)
+    gen_features(data_loader,model,run_settings)
 
     print("Successfully generated features in",save_path)
 

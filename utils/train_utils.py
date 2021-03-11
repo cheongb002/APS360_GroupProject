@@ -17,16 +17,16 @@ from utils.common import *
 import progressbar
 
 
-def train_net(model, train_loader, val_loader, settings):
-    print(settings.num_classes())
-    settings.save_settings()
+def train_net(model, train_loader, val_loader, run_settings):
+    #print(run_settings.num_classes())
+    run_settings.save_settings()
     ########################################################################
-    classes = settings.classes
-    batch_size = settings.batch_size
-    learning_rate = settings.learning_rate
-    num_epochs = settings.num_epochs
-    save_weights = settings.save_weights
-    logdir = settings.tensorboard_logdir
+    classes = run_settings.classes
+    batch_size = run_settings.batch_size
+    learning_rate = run_settings.learning_rate
+    num_epochs = run_settings.num_epochs
+    save_weights = run_settings.save_weights
+    logdir = run_settings.tensorboard_logdir
     ########################################################################
     # Fixed PyTorch random seed for reproducible result
     torch.manual_seed(1000)
@@ -42,14 +42,14 @@ def train_net(model, train_loader, val_loader, settings):
     # the neural network and scalar label.
     # Optimizer will be SGD with Momentum.
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(model.parameters(), lr=settings.learning_rate)
+    optimizer = optim.Adam(model.parameters(), lr=run_settings.learning_rate)
 
     ########################################################################
     # Set up tensorboard writer to store the accuracies and losses
     
     if not os.path.isdir(logdir):
         os.mkdir(logdir)
-    run_name = get_model_name(model.name,settings, settings.num_epochs)
+    run_name = get_model_name(model.name,run_settings, run_settings.num_epochs)
     logdir = os.path.join(logdir, run_name)
     os.mkdir(logdir) #Will give error if directory already exists. Try giving a new unique identifier, or deleting the old run logs
 
@@ -84,7 +84,7 @@ def train_net(model, train_loader, val_loader, settings):
             epoch_start = time.time()
             for imgs, labels in iter(current_loader):
                 #To Enable GPU Usage
-                if settings.use_cuda and torch.cuda.is_available():
+                if run_settings.use_cuda and torch.cuda.is_available():
                 
                     imgs = imgs.cuda()
                     labels = labels.cuda()
@@ -110,8 +110,8 @@ def train_net(model, train_loader, val_loader, settings):
             val_accuracy = get_accuracy(model,data_loader=eval_loader)
             writer.add_scalar("accuracy/validation", val_accuracy,epoch)
 
-            if settings.save_weights and epoch%settings.save_freq==0:
-                model_path = os.join(settings.weight_checkpoints,get_model_name(model.name,settings,epoch))
+            if run_settings.save_weights and epoch%run_settings.save_freq==0:
+                model_path = os.join(run_settings.weight_checkpoints,get_model_name(model.name,run_settings,epoch))
                 torch.save(model.state_dict(), model_path)
             
             bar.update(epoch,epoch=epoch,train_loss=loss,val_accuracy=val_accuracy)
