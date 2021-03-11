@@ -20,7 +20,7 @@ import efficientnet_pytorch
 from efficientnet_pytorch.model import EfficientNet
 
 from utils.common import *
-from utils_class import settings
+from utils.settings_class import settings
 
 def gen_features():
 
