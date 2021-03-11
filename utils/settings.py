@@ -65,3 +65,6 @@ class settings():
         for item in temp:
             print(item,':',temp[item])
         return True
+
+    def save_settings(self): #save current settings to a txt file
+        

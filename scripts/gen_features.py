@@ -22,40 +22,45 @@ from efficientnet_pytorch.model import EfficientNet
 from utils.common import *
 from utils import settings
 
-use_cuda = True
+def gen_features():
 
-# Where the plant village dataset is
-dataset_path = "/home/brian/Data/APS360/APS Project/PlantVillage"
+    use_cuda = True
 
-#Where you want the features to be saved
-save_path = "/home/brian/Data/APS360/APS Project/PlantVillage_Features"
+    # Where the plant village dataset is
+    dataset_path = "/home/brian/Data/APS360/APS Project/PlantVillage"
 
-#note the other parameter settings are not needed in this case
-# the default classes are sufficient
-settings = settings(dataset_path = dataset_path,
-                    features_path = save_path,
-                    use_cuda=use_cuda)
+    #Where you want the features to be saved
+    save_path = "/home/brian/Data/APS360/APS Project/PlantVillage_Features"
 
-'''change your settings up here'''
+    #note the other parameter settings are not needed in this case
+    # the default classes are sufficient
+    settings = settings(dataset_path = dataset_path,
+                        features_path = save_path,
+                        use_cuda=use_cuda)
 
-transformations = torchvision.transforms.Compose([
-    torchvision.transforms.Resize(settings.image_size),
-    torchvision.transforms.ToTensor(),
-    torchvision.transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
-])
-full_dataset = torchvision.datasets.ImageFolder(dataset_path,transform=transformations)
+    '''change your settings up here'''
 
-print("The following classes were found: {}".format(classes))
-settings.classes = classes #just in case they're different
+    transformations = torchvision.transforms.Compose([
+        torchvision.transforms.Resize(settings.image_size),
+        torchvision.transforms.ToTensor(),
+        torchvision.transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+    ])
+    full_dataset = torchvision.datasets.ImageFolder(dataset_path,transform=transformations)
 
-data_loader = torch.utils.data.DataLoader(full_dataset)
+    print("The following classes were found: {}".format(classes))
+    settings.classes = classes #just in case they're different
 
-model = create_model("efficientnet",settings,size=0)
+    data_loader = torch.utils.data.DataLoader(full_dataset)
 
-if use_cuda and torch.cuda.is_available():
-    model.cuda()
-    print("CUDA is available")
+    model = create_model("efficientnet",settings,size=0)
 
-gen_features(data_loader,model,settings)
+    if use_cuda and torch.cuda.is_available():
+        model.cuda()
+        print("CUDA is available")
 
-print("Successfully generated features in",save_path)
+    gen_features(data_loader,model,settings)
+
+    print("Successfully generated features in",save_path)
+
+if __name__ == '__main__':
+    gen_features()
