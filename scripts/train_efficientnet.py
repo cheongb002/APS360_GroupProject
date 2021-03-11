@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 
 from utils.common import *
 from utils.train_utils import *
-from utils.settings import settings
+from utils.settings_class import settings
 
 #import efficientnet_pytorch
 from efficientnet_pytorch.model import EfficientNet
