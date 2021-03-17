@@ -2,6 +2,7 @@
 import torch
 import torchvision
 from utils.settings import settings
+from utils.loaders import getloaders
 
 #set your settings, customizing from the defaults if necessary, see utils/settings.py for all parameters
 settings = settings()
@@ -16,6 +17,7 @@ settings.identifier = "training_template"
 # and get back the data_loader objects
 
 #train_loader, val_loader, test_loader = getloaders(settings)
+
 transformations = torchvision.transforms.Compose([
     torchvision.transforms.Resize(settings.image_size),
     torchvision.transforms.ToTensor(),
@@ -45,7 +47,6 @@ print("Number of test examples: {}".format(len(test_size)))
 train_loader = torch.utils.data.DataLoader(train_set, batch_size=settings.batch_size,shuffle=True)
 val_loader = torch.utils.data.DataLoader(val_set,batch_size = 512,shuffle=True) #want largest possible bs for val set for speed
 test_loader = torch.utils.data.DataLoader(test_set,shuffle=True)
-#up to here
 
 #create model using create_model function
 model = create_model("Template model",settings)

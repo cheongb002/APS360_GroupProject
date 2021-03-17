@@ -18,7 +18,13 @@ class settings():
                 image_size = [224,224],
                 save_freq = 1,
                 identifier = None,
-                train_val_test_split = [0.8,0.15,0.5]
+                train_val_test_split = [0.8,0.15,0.5],
+                randomRotate = False,
+                randomHoriFlip = False,
+                randomVertFlip = False,
+                randomGray = False,
+                randomCrop = False
+
                 #add some boolean parameters for any transformations we want
                 ):
         """Aggregated settings class for various scripts
@@ -58,6 +64,11 @@ class settings():
         self.save_freq = save_freq
         self.identifier = identifier
         self.train_val_test_split = train_val_test_split
+        self.randomRotate = randomRotate,
+        self.randomHoriFlip = randomHoriFlip,
+        self.randomVertFlip = randomVertFlip,
+        self.randomGray = randomGray,
+        self.randomCrop = randomCrop
 
     def num_classes(self): #get number of classes, used in some functions
         #this is a function instead of a variable just in case you change classes
