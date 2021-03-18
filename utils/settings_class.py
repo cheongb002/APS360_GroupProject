@@ -19,7 +19,13 @@ class settings():
                 save_freq = 1,
                 identifier = None,
                 train_val_test_split = [0.8,0.15,0.5],
-                settings_path = "/home/brian/Data/APS360/APS_Project/trial_settings"
+                settings_path = "/home/brian/Data/APS360/APS_Project/trial_settings",
+                randomRotate = False,
+                randomHoriFlip = False,
+                randomVertFlip = False,
+                randomGray = False,
+                randomCrop = False
+
                 #add some boolean parameters for any transformations we want
                 ):
         """Aggregated settings class for various scripts
@@ -59,6 +65,11 @@ class settings():
         self.save_freq = save_freq
         self.identifier = identifier
         self.train_val_test_split = train_val_test_split
+        self.randomRotate = randomRotate,
+        self.randomHoriFlip = randomHoriFlip,
+        self.randomVertFlip = randomVertFlip,
+        self.randomGray = randomGray,
+        self.randomCrop = randomCrop
 
         self.settings_path = settings_path
         if not os.path.isdir(self.settings_path):

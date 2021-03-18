@@ -7,6 +7,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 import torchvision
+import torchvision.models as models
 from torch.utils.data.sampler import SubsetRandomSampler
 from torch.utils.tensorboard import SummaryWriter
 import torchvision.transforms as transforms
@@ -25,6 +26,31 @@ def create_model(architecture, settings, size=0):
     elif architecture == "efficientnet_fc":
         model = EfficientNet_Classifier(settings)
         print("EfficientNet Classifier created")
+        return model
+    
+    elif architecture == "vgg":
+        model = models.vgg19(pretrained=True)
+        print("VGG-19 Model created")
+        return model
+
+    elif architecture == "resnet":
+        model = models.resnet152(pretrained=True)
+        print("ResNet-152 Model created")
+        return model
+    
+    elif architecture == "densenet":
+        model = models.densenet161(pretrained=True)
+        print("Densenet-161 Model created")
+        return model
+    
+    elif architecture == "googlenet": # requires scipy to be installed
+        model = models.googlenet(pretrained=True)
+        print("GoogLeNet Model created")
+        return model
+    
+    elif architecture == "resnext":
+        model = models.resnext101_32x8d(pretrained=True)
+        print("ResNeXt-101-32x8d Model created")
         return model
     
     else:

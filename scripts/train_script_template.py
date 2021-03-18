@@ -63,6 +63,6 @@ def train_template():
     #train_net(model,train_loader,val_loader,settings)
 
     test_acc = get_accuracy(model,test_loader)
-    print("Final Test accuracy: {}".format(test_acc))`
+    print("Final Test accuracy: {}".format(test_acc))
 if __name__ == '__main__':
     train_template()
