@@ -3,11 +3,11 @@ import os
 import numpy as np
 import time
 import torch
-import torch.models as models
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 import torchvision
+import torchvision.models as models
 from torch.utils.data.sampler import SubsetRandomSampler
 from torch.utils.tensorboard import SummaryWriter
 import torchvision.transforms as transforms
