@@ -1,9 +1,17 @@
 #import what you need
 import torch
 import torchvision
+import os
+ROOT_DIR = os.path.abspath(os.curdir)
+#utils_module = os.path.join(ROOT_DIR,'utils')
+import sys
+if ROOT_DIR not in sys.path:
+    print("path appended to system path")
+    sys.path.append(ROOT_DIR)
+import utils.settings_class
 from utils.settings_class import settings
 
-
+assert False
 def train_template():
 
     #set your settings, customizing from the defaults if necessary, see utils/settings.py for all parameters
