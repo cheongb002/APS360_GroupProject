@@ -42,6 +42,7 @@ def train_net(model, train_loader, val_loader, run_settings):
     # the neural network and scalar label.
     # Optimizer will be SGD with Momentum.
     criterion = nn.CrossEntropyLoss()
+    criterion.requires_grad = True
     optimizer = optim.Adam(model.parameters(), lr=run_settings.learning_rate)
 
     ########################################################################
@@ -111,7 +112,7 @@ def train_net(model, train_loader, val_loader, run_settings):
             writer.add_scalar("accuracy/validation", val_accuracy,epoch)
 
             if run_settings.save_weights and epoch%run_settings.save_freq==0:
-                model_path = os.join(run_settings.weight_checkpoints,get_model_name(model.name,run_settings,epoch))
+                model_path = os.path.join(run_settings.weight_checkpoints,get_model_name(model.name,run_settings,epoch))
                 torch.save(model.state_dict(), model_path)
             
             bar.update(epoch,epoch=epoch,train_loss=loss,val_accuracy=val_accuracy)

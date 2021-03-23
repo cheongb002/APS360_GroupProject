@@ -1,5 +1,5 @@
 import torchvision
-from utils.settings import settings
+from utils.settings_class import settings
 import torch
 import numpy as np
 
@@ -27,15 +27,15 @@ def getloaders(settings):
         transformList.append(torchvision.transforms.RandomVerticalFlip(0.3))   #Parameter is probability of occurrence
     if(settings.randomGray):
         transformList.append(torchvision.transforms.RandomGrayscale(0.3))      #Parameter is probability of occurrence
-    if(settings.randomRotate and np.rand()>=0.3):                              #0.3 is probability of occurrence
+    if(settings.randomRotate and np.random.rand()>=0.3): #0.3 is probability of occurrence
         transformList.append(torchvision.transforms.RandomRotation([0,359]))   #Parameter is range of rotation
 
     transformations = torchvision.transforms.Compose(transformList)
 
 
     full_dataset = torchvision.datasets.ImageFolder(settings.dataset_path,transform=transformations)
+    classes = settings.classes
     print("The following classes were found: {}".format(classes))
-    settingsinstance.classes=classes
 
     #split your dataset
     full_size = len(full_dataset)
@@ -45,9 +45,9 @@ def getloaders(settings):
     split_sizes = [train_size,val_size,test_size]
     train_set,val_set,test_set = torch.utils.data.random_split(full_dataset,split_sizes)
 
-    print("Number of training examples: {}".format(len(train_size)))
+    print("Number of training examples: {}".format(train_size))
     print("Number of validation examples: {}".format(len(val_set)))
-    print("Number of test examples: {}".format(len(test_size)))
+    print("Number of test examples: {}".format(test_size))
 
     #Create dataloader
     train_loader = torch.utils.data.DataLoader(train_set, batch_size=settings.batch_size,shuffle=True)
