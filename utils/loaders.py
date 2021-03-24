@@ -16,9 +16,7 @@ def getloaders(settings):
     ])
     '''
     transformList = [
-        torchvision.transforms.Resize(settings.image_size),
-        torchvision.transforms.ToTensor(),
-        torchvision.transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+        torchvision.transforms.Resize(settings.image_size)
         ]
     
     if(settings.randomHoriFlip):
@@ -29,6 +27,11 @@ def getloaders(settings):
         transformList.append(torchvision.transforms.RandomGrayscale(0.3))      #Parameter is probability of occurrence
     if(settings.randomRotate and np.rand()>=0.3):                              #0.3 is probability of occurrence
         transformList.append(torchvision.transforms.RandomRotation([0,359]))   #Parameter is range of rotation
+    if(settings.randomBlur and np.rand()>=0.3):
+        transformList.append(torchvision.transforms.GaussianBlur(5*5, sigma=(0.1, 2.0)))
+
+    transformList.append(torchvision.transforms.ToTensor())
+    transformList.append(torchvision.transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]))
 
     transformations = torchvision.transforms.Compose(transformList)
 

@@ -24,7 +24,8 @@ class settings():
                 randomHoriFlip = False,
                 randomVertFlip = False,
                 randomGray = False,
-                randomCrop = False
+                randomCrop = False,
+                randomBlur = False
 
                 #add some boolean parameters for any transformations we want
                 ):
