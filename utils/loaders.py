@@ -1,5 +1,5 @@
 import torchvision
-from utils.settings_class import settings
+#from utils.settings_class import settings
 import torch
 import numpy as np
 
@@ -37,8 +37,8 @@ def getloaders(settings):
 
 
     full_dataset = torchvision.datasets.ImageFolder(settings.dataset_path,transform=transformations)
-    classes = settings.classes
-    print("The following classes were found: {}".format(classes))
+    settings.classes = full_dataset.classes
+    print("The following classes were found: {}".format(settings.classes))
 
     #split your dataset
     full_size = len(full_dataset)

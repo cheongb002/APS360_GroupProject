@@ -16,6 +16,7 @@ from utils.common import *
 
 import progressbar
 
+from pathlib import Path
 
 def train_net(model, train_loader, val_loader, run_settings):
     #print(run_settings.num_classes())
@@ -48,11 +49,11 @@ def train_net(model, train_loader, val_loader, run_settings):
     ########################################################################
     # Set up tensorboard writer to store the accuracies and losses
     
-    if not os.path.isdir(logdir):
-        os.mkdir(logdir)
+    
     run_name = get_model_name(model.name,run_settings, run_settings.num_epochs)
     logdir = os.path.join(logdir, run_name)
-    os.mkdir(logdir) #Will give error if directory already exists. Try giving a new unique identifier, or deleting the old run logs
+
+    Path.mkdir(logdir, parents=True,exist_ok=True)
 
     writer = SummaryWriter(log_dir=logdir)
 
