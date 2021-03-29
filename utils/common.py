@@ -1,4 +1,5 @@
 #general functions
+from datetime import datetime
 import os
 import numpy as np
 import time
@@ -30,26 +31,49 @@ def create_model(architecture, settings, size=0):
     
     elif architecture == "vgg":
         model = models.vgg19(pretrained=True)
+        model.name = "vgg"
+        for param in model.parameters():
+            param.requires_grad = False
+        model.classifier[6] = nn.Linear(4096, len(settings.classes))
         print("VGG-19 Model created")
         return model
 
     elif architecture == "resnet":
         model = models.resnet152(pretrained=True)
+        model.name = "resnet"
+        for param in model.parameters():
+            param.requires_grad = False
+        num_features = model.fc.in_features
+        model.fc = nn.Linear(num_features, len(settings.classes))
         print("ResNet-152 Model created")
         return model
     
     elif architecture == "densenet":
         model = models.densenet161(pretrained=True)
+        model.name = "densenet"
+        for param in model.parameters():
+            param.requires_grad = False
+        model.classifier = nn.Linear(2208, len(settings.classes))
         print("Densenet-161 Model created")
         return model
     
-    elif architecture == "googlenet": # requires scipy to be installed
-        model = models.googlenet(pretrained=True)
+    elif architecture == "googlenet":
+        model = models.googlenet(pretrained=True) # requires scipy to be installed
+        model.name = "googlenet"
+        for param in model.parameters():
+            param.requires_grad = False
+        num_features = model.fc.in_features
+        model.fc = nn.Linear(num_features, len(settings.classes))
         print("GoogLeNet Model created")
         return model
     
     elif architecture == "resnext":
         model = models.resnext101_32x8d(pretrained=True)
+        model.name = "resnext"
+        for param in model.parameters():
+            param.requires_grad = False
+        num_features = model.fc.in_features
+        model.fc = nn.Linear(num_features, len(settings.classes))
         print("ResNeXt-101-32x8d Model created")
         return model
     
@@ -68,7 +92,7 @@ def get_model_name(model_name,settings,epoch):
         name: A string with the hyperparameter information
     """
     if not settings.identifier:
-        name = "{0}_model_{1}_bs{2}_lr{3}_epoch{4}".format(date.today().strftime("%b_%d_%Y"),
+        name = "{0}_model_{1}_bs{2}_lr{3}_epoch{4}".format(datetime.today().strftime("%b_%d_%Y"),
                                                     model_name,
                                                    settings.batch_size,
                                                    settings.learning_rate,
