@@ -2,3 +2,9 @@
 utils/__pycache__/__init__.cpython-37.pyc
 utils/__pycache__/settings_class.cpython-37.pyc
 .vscode/settings.json
+utils/__pycache__/__init__.cpython-38.pyc
+utils/__pycache__/common.cpython-38.pyc
+utils/__pycache__/loaders.cpython-38.pyc
+utils/__pycache__/models.cpython-38.pyc
+utils/__pycache__/settings_class.cpython-38.pyc
+utils/__pycache__/train_utils.cpython-38.pyc
