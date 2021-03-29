@@ -2,7 +2,7 @@
 #You can change the defaults of the parameters, especially the path ones
 import os
 from datetime import datetime
-from pathlib import Paths
+from pathlib import Path
 
 class settings():
     def __init__(self,
