@@ -53,7 +53,7 @@ def train_net(model, train_loader, val_loader, run_settings):
     run_name = get_model_name(model.name,run_settings, run_settings.num_epochs)
     logdir = os.path.join(logdir, run_name)
 
-    Path.mkdir(logdir, parents=True,exist_ok=True)
+    Path(logdir).mkdir(parents=True,exist_ok=True)
 
     writer = SummaryWriter(log_dir=logdir)
 
