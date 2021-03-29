@@ -69,7 +69,7 @@ class settings():
         self.randomVertFlip = randomVertFlip,
         self.randomGray = randomGray,
         self.randomCrop = randomCrop
-
+        self.randomBlur = randomBlur
         self.settings_path = settings_path
         Path(self.settings_path).mkdir(parents=True, exist_ok=True)
 
