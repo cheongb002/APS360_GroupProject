@@ -6,7 +6,7 @@ from datetime import datetime
 class settings():
     def __init__(self,
                 classes = ['Pepper__bell___Bacterial_spot', 'Pepper__bell___healthy', 'Potato___Early_blight', 'Potato___Late_blight', 'Potato___healthy', 'Tomato_Bacterial_spot', 'Tomato_Early_blight', 'Tomato_Late_blight', 'Tomato_Leaf_Mold', 'Tomato_Septoria_leaf_spot', 'Tomato_Spider_mites_Two_spotted_spider_mite', 'Tomato__Target_Spot', 'Tomato__Tomato_YellowLeaf__Curl_Virus', 'Tomato__Tomato_mosaic_virus', 'Tomato_healthy'],
-                dataset_path = 'C:\\Users\\kayef\\OneDrive\\Documents\\Year 3\\APS360 - Applied Fundamentals of Machine Learning\\PlantVillage',
+                dataset_path = 'C:\\Users\\kayef\\OneDrive\\Documents\\Year 3\\APS360 - Applied Fundamentals of Machine Learning\\PlantVillage\\PlantVillage',
                 features_path = 'C:\\Users\\kayef\\OneDrive\\Documents\\Year 3\APS360 - Applied Fundamentals of Machine Learning\\PlantVillage_Features\\efficientnet-b0',
                 tensorboard_logdir = "C:\\Users\\kayef\\OneDrive\\Documents\\Year 3\\APS360 - Applied Fundamentals of Machine Learning\\logs",
                 weight_checkpoints = "C:\\Users\\kayef\\OneDrive\\Documents\\Year 3\APS360 - Applied Fundamentals of Machine Learning\\checkpoints",
@@ -19,7 +19,7 @@ class settings():
                 save_freq = 1,
                 identifier = None,
                 train_val_test_split = [0.8,0.15,0.5],
-                settings_path = "/home/brian/Data/APS360/APS_Project/trial_settings",
+                settings_path = "C:\\Users\\kayef\\OneDrive\\Documents\\Year 3\APS360 - Applied Fundamentals of Machine Learning\\trial_settings",
                 randomRotate = False,
                 randomHoriFlip = False,
                 randomVertFlip = False,
@@ -70,7 +70,8 @@ class settings():
         self.randomHoriFlip = randomHoriFlip,
         self.randomVertFlip = randomVertFlip,
         self.randomGray = randomGray,
-        self.randomCrop = randomCrop
+        self.randomCrop = randomCrop,
+        self.randomBlur = randomBlur
 
         self.settings_path = settings_path
         if not os.path.isdir(self.settings_path):

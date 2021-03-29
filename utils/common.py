@@ -122,6 +122,30 @@ def get_accuracy(model, data_loader):
         total += imgs.shape[0]
     return correct / total
 
+def get_classes_accuracy(model, data_loader, classes):
+    n = len(classes)
+    classes = [i for i in range(n)]
+    correct = [0 for i in range(n)]
+    total = [0 for i in range(n)]
+
+    for imgs, labels in data_loader:
+        
+        #############################################
+        #To Enable GPU Usage
+        if torch.cuda.is_available():
+            imgs = imgs.cuda()
+            labels = labels.cuda()
+        #############################################
+        
+        output = model(imgs)
+        preds = output.max(1)[1]
+        print(labels)
+        for c in classes:
+            correct[c] += ((preds == labels) * (labels == c)).float().sum().item()
+            total[c] += max((labels == c).sum().item(), 1)
+
+    return [i / j for i, j in zip(correct, total)]
+
 def generate_features(data_loader,model,settings): #note batch size should be 1 here
     #loader = torch.utils.data.DataLoader(data)
     save_folder = settings.features_path
