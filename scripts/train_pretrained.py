@@ -15,6 +15,7 @@ def train_pretrained():
     run_settings.save_weights = True
     run_settings.num_epochs = 30
     run_settings.batch_size = 32
+    run_settings.save_freq = 5
 
     train_loader, val_loader, test_loader = getloaders(run_settings)
 
