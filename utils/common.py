@@ -34,7 +34,12 @@ def create_model(architecture, settings, size=0):
         model.name = "vgg"
         for param in model.parameters():
             param.requires_grad = False
-        model.classifier[6] = nn.Linear(4096, len(settings.classes))
+        model.classifier[6] = nn.sequential(
+            nn.Linear(4096,320),
+            nn.ReLu(),
+            nn.Linear(320,64),
+            nn.ReLu(),
+            nn.Linear(64,settings.num_classes()))
         print("VGG-19 Model created")
         return model
 
