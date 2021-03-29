@@ -2,7 +2,7 @@ import torchvision
 #from utils.settings_class import settings
 import torch
 import numpy as np
-
+torch.manual_seed(0)
 def getloaders(settings):
     '''
     Old version:
