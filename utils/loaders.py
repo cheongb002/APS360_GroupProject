@@ -54,7 +54,7 @@ def getloaders(settings):
 
     #Create dataloader
     train_loader = torch.utils.data.DataLoader(train_set, batch_size=settings.batch_size,shuffle=True)
-    val_loader = torch.utils.data.DataLoader(val_set,batch_size = 512,shuffle=True) #want largest possible bs for val set for speed
+    val_loader = torch.utils.data.DataLoader(val_set,batch_size = 64,shuffle=True) #want largest possible bs for val set for speed
     test_loader = torch.utils.data.DataLoader(test_set,shuffle=True)
 
     return train_loader, val_loader, test_loader
