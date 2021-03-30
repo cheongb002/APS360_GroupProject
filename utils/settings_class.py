@@ -18,7 +18,7 @@ class settings():
                 image_size = [224,224],
                 save_freq = 1,
                 identifier = None,
-                train_val_test_split = [0.8,0.15,0.5],
+                train_val_test_split = [0.8,0.1,0.1],
                 settings_path = "C:\\Users\\kayef\\OneDrive\\Documents\\Year 3\APS360 - Applied Fundamentals of Machine Learning\\trial_settings",
                 randomRotate = False,
                 randomHoriFlip = False,
