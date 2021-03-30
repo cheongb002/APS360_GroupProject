@@ -32,6 +32,7 @@ def train_pretrained():
     #print(name)
     train_net(model, train_loader, val_loader, run_settings,test_loader=test_loader)
     
+    model.eval() #put in evaluation mode
     test_acc = get_accuracy(model,test_loader)
     print("Final Test accuracy: {}".format(test_acc))
 
