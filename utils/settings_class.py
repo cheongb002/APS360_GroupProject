@@ -2,6 +2,7 @@
 #You can change the defaults of the parameters, especially the path ones
 import os
 from datetime import datetime
+from pathlib import Paths
 
 class settings():
     def __init__(self,
@@ -49,14 +50,11 @@ class settings():
         self.classes = classes
         self.dataset_path = dataset_path #where the datset is stored
         self.features_path = features_path #this one is optional if not doing feature extraction
-        if not os.path.isdir(self.features_path):
-            os.mkdir(self.features_path)
+        Path(self.features_path).mkdir(parents=True, exist_ok=True)
         self.tensorboard_logdir = tensorboard_logdir
-        if not os.path.isdir(self.tensorboard_logdir):
-            os.mkdir(self.tensorboard_logdir)
+        Path(self.tensorboard_logdir).mkdir(parents=True, exist_ok=True)
         self.weight_checkpoints = weight_checkpoints
-        if not os.path.isdir(self.weight_checkpoints):
-            os.mkdir(self.weight_checkpoints)
+        Path(self.weight_checkpoints).mkdir(parents=True, exist_ok=True)
         self.use_cuda = use_cuda
         self.learning_rate = learning_rate
         self.num_epochs = num_epochs
@@ -74,8 +72,7 @@ class settings():
         self.randomBlur = randomBlur
 
         self.settings_path = settings_path
-        if not os.path.isdir(self.settings_path):
-            os.mkdir(self.settings_path)
+        Path(self.settings_path).mkdir(parents=True, exist_ok=True)
 
     def num_classes(self): #get number of classes, used in some functions
         #this is a function instead of a variable just in case you change classes
