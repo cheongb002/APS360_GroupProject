@@ -19,21 +19,8 @@ def train_pretrained():
     run_settings.save_freq = 5
 
     train_loader, val_loader, test_loader = getloaders(run_settings)
-    # create model using create_model function
-    model = create_model("densenet", run_settings) # change as needed (options: vgg, resnet, densenet, googlenet, resnext)
-
-    if run_settings.use_cuda and torch.cuda.is_available():
-        model.cuda()
-        print("CUDA available")
-    else:
-        print("CUDA not being used")
-
-    print("Beginning Training on", name)
-    #print(name)
-    train_net(model, train_loader, val_loader, run_settings,test_loader=test_loader)
-    
-    test_acc = get_accuracy(model,test_loader)
-    print("Final Test accuracy: {}".format(test_acc))
-
+    for loader in [val_loader]: #[train_loader,val_loader,test_loader]:
+        for imgs, labels in loader:
+            print(labels)
 if __name__ == '__main__':
     train_pretrained()

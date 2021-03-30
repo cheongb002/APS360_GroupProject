@@ -18,7 +18,7 @@ import progressbar
 
 from pathlib import Path
 
-def train_net(model, train_loader, val_loader, run_settings):
+def train_net(model, train_loader, val_loader, run_settings, test_loader=None):
     #print(run_settings.num_classes())
     run_settings.save_settings()
     ########################################################################
@@ -52,10 +52,13 @@ def train_net(model, train_loader, val_loader, run_settings):
     
     run_name = get_model_name(model.name,run_settings, run_settings.num_epochs)
     logdir = os.path.join(logdir, run_name)
-
-    Path(logdir).mkdir(parents=True,exist_ok=True)
-
     writer = SummaryWriter(log_dir=logdir)
+    
+    #make folder for the weight checkpoints
+    Path(logdir).mkdir(parents=True,exist_ok=True)
+    if run_settings.save_weights:
+        Path(os.path.join(run_settings.weight_checkpoints,run_settings.identifier)).mkdir(parents=True,exist_ok=True)
+    
 
     #iters, losses, train_acc, val_acc = [], [], [], []
     n=0
@@ -79,19 +82,21 @@ def train_net(model, train_loader, val_loader, run_settings):
     # Loop over the data iterator and sample a new batch of training data
     # Get the output from the network, and optimize our loss function.
     start_time = time.time()
-    #print('Set up done')
+    print('Set up done. Beginning first epoch')
     with progressbar.ProgressBar(max_value = num_epochs,widgets = widgets) as bar:
         for epoch in range(num_epochs):  # loop over the dataset multiple times
             #print("Epoch", epoch)
             epoch_start = time.time()
             for imgs, labels in iter(current_loader):
+                
                 #To Enable GPU Usage
                 if run_settings.use_cuda and torch.cuda.is_available():
                 
                     imgs = imgs.cuda()
                     labels = labels.cuda()
                     ######################
-
+                #print(torch.cuda.memory_summary())
+                #print(len(imgs))
                 out = model(imgs)             # forward pass
 
                 loss = criterion(out, labels) # compute the total loss
@@ -111,9 +116,14 @@ def train_net(model, train_loader, val_loader, run_settings):
 
             val_accuracy = get_accuracy(model,data_loader=eval_loader)
             writer.add_scalar("accuracy/validation", val_accuracy,epoch)
+            if test_loader:
+                test_accuracy = get_accuracy(model,test_loader)
+                writer.add_scalar("accuracy/test",test_accuracy,epoch)
+                #print("written to test {}".format(test_accuracy))
 
+                #assert False
             if run_settings.save_weights and epoch%run_settings.save_freq==0:
-                model_path = os.path.join(run_settings.weight_checkpoints,get_model_name(model.name,run_settings,epoch))
+                model_path = os.path.join(run_settings.weight_checkpoints,run_settings.identifier,get_model_name(model.name,run_settings,epoch))
                 torch.save(model.state_dict(), model_path)
             
             bar.update(epoch,epoch=epoch,train_loss=loss,val_accuracy=val_accuracy)

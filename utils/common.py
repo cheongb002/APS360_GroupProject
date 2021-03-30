@@ -22,6 +22,15 @@ def create_model(architecture, settings, size=0):
         from efficientnet_pytorch import EfficientNet
         model = EfficientNet.from_pretrained("efficientnet-b{}".format(size), num_classes=settings.num_classes())
         print("EfficientNet-b{} Model created".format(size))
+
+        for param in model.parameters():
+            param.requires_grad = False
+        model._fc = nn.Sequential(
+            nn.Linear(model._fc.in_features,320),
+            nn.ReLU(),
+            nn.Linear(320,64),
+            nn.ReLU(),
+            nn.Linear(64,settings.num_classes()))
         return model
     
     elif architecture == "efficientnet_fc":
@@ -34,11 +43,11 @@ def create_model(architecture, settings, size=0):
         model.name = "vgg"
         for param in model.parameters():
             param.requires_grad = False
-        model.classifier[6] = nn.sequential(
+        model.classifier[6] = nn.Sequential(
             nn.Linear(4096,320),
-            nn.ReLu(),
+            nn.ReLU(),
             nn.Linear(320,64),
-            nn.ReLu(),
+            nn.ReLU(),
             nn.Linear(64,settings.num_classes()))
         print("VGG-19 Model created")
         return model
@@ -58,7 +67,12 @@ def create_model(architecture, settings, size=0):
         model.name = "densenet"
         for param in model.parameters():
             param.requires_grad = False
-        model.classifier = nn.Linear(2208, len(settings.classes))
+        model.classifier = nn.Sequential(
+            nn.Linear(2208,320),
+            nn.ReLU(),
+            nn.Linear(320,64),
+            nn.ReLU(),
+            nn.Linear(64,settings.num_classes()))
         print("Densenet-161 Model created")
         return model
     
@@ -68,7 +82,12 @@ def create_model(architecture, settings, size=0):
         for param in model.parameters():
             param.requires_grad = False
         num_features = model.fc.in_features
-        model.fc = nn.Linear(num_features, len(settings.classes))
+        model.fc = nn.Sequential(
+            nn.Linear(num_features,320),
+            nn.ReLU(),
+            nn.Linear(320,64),
+            nn.ReLU(),
+            nn.Linear(64,settings.num_classes()))
         print("GoogLeNet Model created")
         return model
     
@@ -78,7 +97,12 @@ def create_model(architecture, settings, size=0):
         for param in model.parameters():
             param.requires_grad = False
         num_features = model.fc.in_features
-        model.fc = nn.Linear(num_features, len(settings.classes))
+        model.fc = nn.Sequential(
+            nn.Linear(num_features,320),
+            nn.ReLU(),
+            nn.Linear(320,64),
+            nn.ReLU(),
+            nn.Linear(64,settings.num_classes()))
         print("ResNeXt-101-32x8d Model created")
         return model
     
