@@ -122,6 +122,7 @@ def train_net(model, train_loader, val_loader, run_settings, test_loader=None):
                 #print("written to test {}".format(test_accuracy))
 
                 #assert False
+
             if run_settings.save_weights and epoch%run_settings.save_freq==0:
                 model_path = os.path.join(run_settings.weight_checkpoints,run_settings.identifier,get_model_name(model.name,run_settings,epoch))
                 torch.save(model.state_dict(), model_path)

@@ -20,13 +20,13 @@ def getloaders(settings):
         ]
     
     if(settings.randomHoriFlip):
-        transformList.append(torchvision.transforms.RandomHorizontalFlip(0.3)) #Parameter is probability of occurrence
+        transformList.append(torchvision.transforms.RandomHorizontalFlip(0.5)) #Parameter is probability of occurrence
     if(settings.randomVertFlip):
-        transformList.append(torchvision.transforms.RandomVerticalFlip(0.3))   #Parameter is probability of occurrence
+        transformList.append(torchvision.transforms.RandomVerticalFlip(0.5))   #Parameter is probability of occurrence
     if(settings.randomGray):
         transformList.append(torchvision.transforms.RandomGrayscale(0.3))      #Parameter is probability of occurrence
-    if(settings.randomRotate and np.random.rand()>=0.3): #0.3 is probability of occurrence
-        transformList.append(torchvision.transforms.RandomRotation([0,359]))   #Parameter is range of rotation
+    if(settings.randomRotate and np.random.rand()<=0.3): #0.3 is probability of occurrence
+        transformList.append(torchvision.transforms.RandomRotation([-10,10]))   #Parameter is range of rotation
     if(settings.randomBlur and np.rand()>=0.3):
         transformList.append(torchvision.transforms.GaussianBlur(5*5, sigma=(0.1, 2.0)))
 
