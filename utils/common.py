@@ -131,24 +131,26 @@ def get_model_name(model_name,settings,epoch):
     return name
 
 def get_accuracy(model, data_loader):
-
+    model.eval()
     correct = 0
     total = 0
-    for imgs, labels in data_loader:
-        
-        #############################################
-        #To Enable GPU Usage
-        if torch.cuda.is_available():
-          imgs = imgs.cuda()
-          labels = labels.cuda()
-        #############################################
-        
-        output = model(imgs)
-        
-        #select index with maximum prediction score
-        pred = output.max(1, keepdim=True)[1]
-        correct += pred.eq(labels.view_as(pred)).sum().item()
-        total += imgs.shape[0]
+    with torch.no_grad():
+        for imgs, labels in data_loader:
+            
+            #############################################
+            #To Enable GPU Usage
+            if torch.cuda.is_available():
+                imgs = imgs.cuda()
+                labels = labels.cuda()
+            #############################################
+            
+            output = model(imgs)
+            
+            #select index with maximum prediction score
+            pred = output.max(1, keepdim=True)[1]
+            correct += pred.eq(labels.view_as(pred)).sum().item()
+            total += imgs.shape[0]
+    model.train()
     return correct / total
 
 def generate_features(data_loader,model,settings): #note batch size should be 1 here
