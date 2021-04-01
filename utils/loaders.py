@@ -51,6 +51,7 @@ def getloaders(settings):
     print("Number of training examples: {}".format(train_size))
     print("Number of validation examples: {}".format(len(val_set)))
     print("Number of test examples: {}".format(test_size))
+    print(dict(Counter(datset.targets)))
 
     #Create dataloader
     train_loader = torch.utils.data.DataLoader(train_set, batch_size=settings.batch_size,shuffle=True)

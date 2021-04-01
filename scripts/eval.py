@@ -131,13 +131,40 @@ def get_precision(confusion_matrix):
 def get_recall(confusion_matrix):
     return confusion_matrix.diag() / confusion_matrix.sum(0)
 
-def evaluate_model(weight_path, settings):
+def evaluate_model(model_type, run_settings):
     train_loader, val_loader, test_loader = getloaders(run_settings)
+    model = create_model(model_type, run_settings) # change as needed (options: vgg, resnet, densenet, googlenet, resnext)
+    #model.eval()
+    if run_settings.use_cuda and torch.cuda.is_available():
+        model.cuda()
+        print("CUDA available")
+    else:
+        print("CUDA not being used")
+    model_path = os.path.join(run_settings.weight_checkpoints, run_settings.identifier, get_model_name(model.name,run_settings,run_settings.num_epochs))
+    state = torch.load(model_path)
+    model.load_state_dict(state) #load weights in
+
+    cm = get_confusion_matrix(model, data_loader, classes)
+
+    plot_confusion_matrix(cm,
+                          run_settings.classes,
+                          title='Confusion matrix',
+                          normalize=True)
+
 
 
 
 if __name__ == '__main__':
-    weights = 
-    eval_settings = settings()
-    eval_settings.
-    evaluate_model(weights, eval_settings)
+=
+    run_settings = settings()
+    #run_settings.learning_rate = 1e-5 #default is 1e-3
+    run_settings.identifier = "densenet_trial4"
+    run_settings.use_cuda = True
+    run_settings.save_weights = True
+    run_settings.num_epochs = 30
+    run_settings.batch_size = 256
+    run_settings.save_freq = 5
+
+    evaluate_model("densenet", run_settings)
+
+    
