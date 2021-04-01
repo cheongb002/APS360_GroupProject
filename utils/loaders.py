@@ -2,7 +2,7 @@ import torchvision
 #from utils.settings_class import settings
 import torch
 import numpy as np
-torch.manual_seed(0)
+from collections import Counter
 def getloaders(settings):
     '''
     Old version:
@@ -53,8 +53,8 @@ def getloaders(settings):
     print("Number of test examples: {}".format(test_size))
 
     #Create dataloader
-    train_loader = torch.utils.data.DataLoader(train_set, batch_size=settings.batch_size,shuffle=True)
-    val_loader = torch.utils.data.DataLoader(val_set,batch_size = 64,shuffle=True) #want largest possible bs for val set for speed
-    test_loader = torch.utils.data.DataLoader(test_set,shuffle=True)
+    train_loader = torch.utils.data.DataLoader(train_set, batch_size=settings.batch_size, shuffle=True)
+    val_loader = torch.utils.data.DataLoader(val_set,batch_size = settings.batch_size, shuffle=True) #want largest possible bs for val set for speed
+    test_loader = torch.utils.data.DataLoader(test_set,batch_size = settings.batch_size, shuffle=True)
 
     return train_loader, val_loader, test_loader
