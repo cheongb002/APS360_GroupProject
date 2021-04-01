@@ -1,7 +1,9 @@
 import torch
+import os, sys
+sys.path.append(os.path.join(os.getcwd(), "../"))
 from utils.settings_class import settings
 from utils.loaders import getloaders
-import os
+
 from utils.common import create_model, get_model_name
 
 def get_classes_accuracy(model, data_loader, classes):
@@ -30,7 +32,7 @@ def get_classes_accuracy(model, data_loader, classes):
 def get_confusion_matrix(model, data_loader, classes):
     n = len(classes)
     confusion_matrix = torch.zeros(n, n, dtype=torch.int64)
-
+    model.eval()
     with torch.no_grad():
         for imgs, labels in data_loader:
         
@@ -90,7 +92,7 @@ def plot_confusion_matrix(cm,
     import numpy as np
     import itertools
 
-    accuracy = np.trace(cm) / np.sum(cm).astype('float')
+    accuracy = float(torch.trace(cm) / torch.sum(cm))
     misclass = 1 - accuracy
 
     if cmap is None:
@@ -107,7 +109,7 @@ def plot_confusion_matrix(cm,
         plt.yticks(tick_marks, target_names)
 
     if normalize:
-        cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+        cm = cm/ cm.sum(axis=1)[:, np.newaxis]
 
 
     thresh = cm.max() / 1.5 if normalize else cm.max() / 2
@@ -122,10 +124,12 @@ def plot_confusion_matrix(cm,
                      color="white" if cm[i, j] > thresh else "black")
 
 
-    plt.tight_layout()
+    #plt.tight_layout()
     plt.ylabel('True label')
     plt.xlabel('Predicted label\naccuracy={:0.4f}; misclass={:0.4f}'.format(accuracy, misclass))
-    plt.show()
+    #plt.set_size_inches(18.5, 10.5)
+    fig = plt.show()
+    
 
 def get_precision(confusion_matrix):
     return confusion_matrix.diag() / confusion_matrix.sum(1)
@@ -133,10 +137,9 @@ def get_precision(confusion_matrix):
 def get_recall(confusion_matrix):
     return confusion_matrix.diag() / confusion_matrix.sum(0)
 
-def evaluate_model(model_type, run_settings):
-    train_loader, val_loader, test_loader = getloaders(run_settings)
+def evaluate_model(model_type,data_loader, run_settings):
     model = create_model(model_type, run_settings) # change as needed (options: vgg, resnet, densenet, googlenet, resnext)
-    model.eval()
+    #model.eval()
     if run_settings.use_cuda and torch.cuda.is_available():
         model.cuda()
         print("CUDA available")
@@ -146,13 +149,13 @@ def evaluate_model(model_type, run_settings):
     state = torch.load(model_path)
     
     model.load_state_dict(state) #load weights in
-
-    cm = get_confusion_matrix(model, data_loader, classes)
-
+    print("Weights loaded into model")
+    cm = get_confusion_matrix(model, data_loader, run_settings.classes)
+    print("Confusion matrix created")
     plot_confusion_matrix(cm,
                           run_settings.classes,
                           title='Confusion matrix',
-                          normalize=True)
+                          normalize=False)
 
 
 
@@ -160,13 +163,13 @@ def evaluate_model(model_type, run_settings):
 if __name__ == '__main__':
     run_settings = settings()
     #run_settings.learning_rate = 1e-5 #default is 1e-3
-    run_settings.identifier = "densenet_trial6"
+    run_settings.identifier = "densenet_trial4"
     run_settings.use_cuda = True
     run_settings.save_weights = True
-    run_settings.num_epochs = 0
-    run_settings.batch_size = 256
+    run_settings.num_epochs = 25
+    run_settings.batch_size = 64
     run_settings.save_freq = 5
-
-    evaluate_model("densenet", run_settings)
+    __, __, test_loader = getloaders(run_settings)
+    evaluate_model("densenet", test_loader, run_settings)
 
     

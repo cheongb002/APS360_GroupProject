@@ -21,6 +21,7 @@ def train_pretrained():
     train_loader, val_loader, test_loader = getloaders(run_settings)
     for loader in [val_loader]: #[train_loader,val_loader,test_loader]:
         for imgs, labels in loader:
-            print(labels)
+            #print(labels)
+            pass
 if __name__ == '__main__':
     train_pretrained()
