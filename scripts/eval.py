@@ -1,6 +1,8 @@
 import torch
 from utils.settings_class import settings
 from utils.loaders import getloaders
+import os
+from utils.common import create_model, get_model_name
 
 def get_classes_accuracy(model, data_loader, classes):
     n = len(classes)
@@ -134,7 +136,7 @@ def get_recall(confusion_matrix):
 def evaluate_model(model_type, run_settings):
     train_loader, val_loader, test_loader = getloaders(run_settings)
     model = create_model(model_type, run_settings) # change as needed (options: vgg, resnet, densenet, googlenet, resnext)
-    #model.eval()
+    model.eval()
     if run_settings.use_cuda and torch.cuda.is_available():
         model.cuda()
         print("CUDA available")
@@ -142,6 +144,7 @@ def evaluate_model(model_type, run_settings):
         print("CUDA not being used")
     model_path = os.path.join(run_settings.weight_checkpoints, run_settings.identifier, get_model_name(model.name,run_settings,run_settings.num_epochs))
     state = torch.load(model_path)
+    
     model.load_state_dict(state) #load weights in
 
     cm = get_confusion_matrix(model, data_loader, classes)
@@ -155,13 +158,12 @@ def evaluate_model(model_type, run_settings):
 
 
 if __name__ == '__main__':
-=
     run_settings = settings()
     #run_settings.learning_rate = 1e-5 #default is 1e-3
-    run_settings.identifier = "densenet_trial4"
+    run_settings.identifier = "densenet_trial6"
     run_settings.use_cuda = True
     run_settings.save_weights = True
-    run_settings.num_epochs = 30
+    run_settings.num_epochs = 0
     run_settings.batch_size = 256
     run_settings.save_freq = 5
 
