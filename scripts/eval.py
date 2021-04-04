@@ -137,7 +137,7 @@ def get_precision(confusion_matrix):
 def get_recall(confusion_matrix):
     return confusion_matrix.diag() / confusion_matrix.sum(0)
 
-def evaluate_model(model_type,data_loader, run_settings):
+def evaluate_model(model_type, data_loader, run_settings):
     model = create_model(model_type, run_settings) # change as needed (options: vgg, resnet, densenet, googlenet, resnext)
     #model.eval()
     if run_settings.use_cuda and torch.cuda.is_available():
@@ -150,6 +150,9 @@ def evaluate_model(model_type,data_loader, run_settings):
     
     model.load_state_dict(state) #load weights in
     print("Weights loaded into model")
+
+    print(get_accuracy(model,data_loader))
+
     cm = get_confusion_matrix(model, data_loader, run_settings.classes)
     print("Confusion matrix created")
     plot_confusion_matrix(cm,
@@ -167,7 +170,7 @@ if __name__ == '__main__':
     run_settings.use_cuda = True
     run_settings.save_weights = True
     run_settings.num_epochs = 25
-    run_settings.batch_size = 64
+    run_settings.batch_size = 256
     run_settings.save_freq = 5
     __, __, test_loader = getloaders(run_settings)
     evaluate_model("densenet", test_loader, run_settings)

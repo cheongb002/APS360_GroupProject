@@ -9,7 +9,7 @@ class settings():
                 classes = ['Pepper__bell___Bacterial_spot', 'Pepper__bell___healthy', 'Potato___Early_blight', 'Potato___Late_blight', 'Potato___healthy', 'Tomato_Bacterial_spot', 'Tomato_Early_blight', 'Tomato_Late_blight', 'Tomato_Leaf_Mold', 'Tomato_Septoria_leaf_spot', 'Tomato_Spider_mites_Two_spotted_spider_mite', 'Tomato__Target_Spot', 'Tomato__Tomato_YellowLeaf__Curl_Virus', 'Tomato__Tomato_mosaic_virus', 'Tomato_healthy'],
                 dataset_path = "/home/brian/Data/APS360/APS_Project/PlantVillage",
                 features_path = '/home/brian/Data/APS360/APS_Project/PlantVillage_Features\\efficientnet-b0',
-                tensorboard_logdir = "/home/brian/Data/APS360/APS_Project/ogs",
+                tensorboard_logdir = "/home/brian/Data/APS360/APS_Project/logs",
                 weight_checkpoints = "/home/brian/Data/APS360/APS_Project/checkpoints",
                 use_cuda=False,
                 learning_rate = 1e-3,
