@@ -2,7 +2,7 @@ import torchvision
 #from utils.settings_class import settings
 import torch
 import numpy as np
-torch.manual_seed(0)
+from collections import Counter
 def getloaders(settings):
     '''
     Old version:
@@ -20,15 +20,15 @@ def getloaders(settings):
         ]
     
     if(settings.randomHoriFlip):
-        transformList.append(torchvision.transforms.RandomHorizontalFlip(0.3)) #Parameter is probability of occurrence
+        transformList.append(torchvision.transforms.RandomHorizontalFlip(0.5)) #Parameter is probability of occurrence
     if(settings.randomVertFlip):
-        transformList.append(torchvision.transforms.RandomVerticalFlip(0.3))   #Parameter is probability of occurrence
+        transformList.append(torchvision.transforms.RandomVerticalFlip(0.5))   #Parameter is probability of occurrence
     if(settings.randomGray):
         transformList.append(torchvision.transforms.RandomGrayscale(0.3))      #Parameter is probability of occurrence
-    if(settings.randomRotate and np.random.rand()>=0.3): #0.3 is probability of occurrence
-        transformList.append(torchvision.transforms.RandomRotation([0,359]))   #Parameter is range of rotation
-    if(settings.randomBlur and np.rand()>=0.3):
-        transformList.append(torchvision.transforms.GaussianBlur(5*5, sigma=(0.1, 2.0)))
+    if(settings.randomRotate and np.random.rand()<=0.3): #0.3 is probability of occurrence
+        transformList.append(torchvision.transforms.RandomRotation([-10,10]))   #Parameter is range of rotation
+    if(settings.randomBlur and np.random.rand()<=0.3):
+        transformList.append(torchvision.transforms.GaussianBlur(3*3, sigma=(0.1, 2.0)))
 
     transformList.append(torchvision.transforms.ToTensor())
     transformList.append(torchvision.transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]))
@@ -53,8 +53,8 @@ def getloaders(settings):
     print("Number of test examples: {}".format(test_size))
 
     #Create dataloader
-    train_loader = torch.utils.data.DataLoader(train_set, batch_size=settings.batch_size,shuffle=True)
-    val_loader = torch.utils.data.DataLoader(val_set,batch_size = 64,shuffle=True) #want largest possible bs for val set for speed
-    test_loader = torch.utils.data.DataLoader(test_set,shuffle=True)
+    train_loader = torch.utils.data.DataLoader(train_set, batch_size=settings.batch_size, shuffle=True)
+    val_loader = torch.utils.data.DataLoader(val_set,batch_size = settings.batch_size, shuffle=True) #want largest possible bs for val set for speed
+    test_loader = torch.utils.data.DataLoader(test_set,batch_size = settings.batch_size, shuffle=True)
 
     return train_loader, val_loader, test_loader
